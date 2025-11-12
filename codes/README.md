@@ -1,92 +1,105 @@
-# Code for the Grid-World Environment 
+# 格子世界环境代码
 
-## Overview
+## 概述
 
-We added the code for the grid-world environment in my book. Interested readers can develop and test their own algorithms in this environment. Both Python and MATLAB versions are provided.
+我们在本书中加入了用于格子世界环境的代码。感兴趣的读者可以在该环境中开发和测试自己的算法。本项目提供了 Python 和 MATLAB 两种版本。
 
-Please note that we do not provide the code of all the algorithms involved in the book. That is because they are the homework for the students in offline teaching: the students need to develop their own algorithms using the provided environment. Nevertheless, there are third-party implementations of some algorithms. Interested readers can check the links on the home page of the book.
+请注意，书中涉及的所有算法代码我们并未全部提供。这是因为这些算法作为线下教学作业，学生需要利用所给的环境自行开发实现相关算法。当然，也有一些第三方实现可以参考，感兴趣的读者可在本书主页查看相关链接。
 
-I need to thank my PhD students, Yize Mi and Jianan Li, who are also the Teaching Assistants of my offline teaching. They contributed greatly to the code.
+我要感谢我的博士生米一泽和李佳楠，他们也是我线下课程的助教，对本代码贡献良多。
 
-You are welcome to provide any feedback about the code such as bugs if detected.
+欢迎大家对代码提出任何意见或发现的 bug。
 
 ----
 
-## Python Version
+## Python 版本
 
-### Requirements
+### 环境需求
 
-- We support Python 3.7, 3.8, 3.9,  3.10 and 3.11. Make sure the following packages are installed: `numpy` and `matplotlib`.
+- 支持 Python 3.7、3.8、3.9、3.10 和 3.11。请确保已安装如下包：`numpy` 和 `matplotlib`。
 
+### 运行默认示例的方法
 
-### How to Run the Default Example
+运行示例代码，请依照下列步骤：
 
-To run the example, please follow the procedures :
-
-1. Change the directory to the file `examples/`
+1. 切换至 `examples/` 目录
 
 ```bash
 cd examples
 ```
 
-2. Run the script:
+2. 运行脚本：
 
 ```bash
 python example_grid_world.py
 ```
 
-You will see an animation as shown below:
+运行后，您将看到如下动画：
 
-- The blue star denotes the agent's current position within the grid world.
-- The arrows on each grid illustrate the policy for that state. 
-- The green line traces the agent's historical trajectory. 
-- Obstacles are marked with yellow grids. 
-- The target state is indicated by a blue grid. 
-- The numerical values displayed on each grid represent the state values, which are initially generated as random numbers between 0 and 10. You may need to design your own algorithms to calculate these state values later on. 
-- The horizontal number list above the grid world represents the horizontal coordinates (x-axis) of each grid.
-- The vertical number list on the left side represents their vertical coordinates (y-axis).
+- 蓝色星标表示智能体当前位置；
+- 每个格子的箭头表示该状态下的策略；
+- 绿色线条表示智能体的历史运动轨迹；
+- 黄色格子表示障碍物；
+- 蓝色格子表示目标状态；
+- 各格子内的数值为对应状态的价值，起始为 0 到 10 的随机数。后续您需要设计自己的算法计算这些状态价值。
+- 网格上方的数字为水平方向（x 轴）坐标；
+- 网格左侧的数字为垂直方向（y 轴）坐标。
 
 ![](python_version/plots/sample4.png)
 
-### Customize the Parameters of the Grid World Environment
+### 自定义格子世界环境参数
 
-If you would like to customize your own grid world environment, please open `examples/arguments.py` and then change the following arguments:
+若需自定义格子世界环境，请打开 `examples/arguments.py` 并调整以下参数：
 
-"**env-size**", "**start-state**", "**target-state**", "**forbidden-states**", "**reward-target**", "**reward-forbidden**", "**reward-step**":
+"**env-size**"、"**start-state**"、"**target-state**"、"**forbidden-states**"、"**reward-target**"、"**reward-forbidden**"、"**reward-step**"：
 
-- "env-size" is represented as a tuple, where the first element represents the column index (horizontal coordinate), and the second element represents the row index (vertical coordinate).
+- “env-size” 表示为一个元组，第一个元素为列索引（水平坐标），第二个为行索引（垂直坐标）。
+- “start-state” 表示智能体初始位置；
+- “target-state” 表示目标位置；
+- “forbidden-states” 表示障碍物位置；
+- “reward-target”、“reward-forbidden” 和 “reward-step” 分别表示到达目标、进入障碍和每一步的奖励。
 
-- "start-state" denotes where the agent starts.
+示例如下：
 
-- "target-state" denotes the position of the target. 
+# 若源码目录下误加入了 `__pycache__` 文件夹到 Git 暂存区，可用如下命令移除（仅从暂存区删除，不删除本地文件）：
 
-- "forbidden-states" denotes the positions of obstacles. 
+```bash
+git rm --cached "__pycache__"
+```
 
-- "reward-target", "reward-forbidden" and "reward-step" represent the reward when reaching the target, the reward when entering a forbidden area, and the reward for each step, respectively.  
+如果看到如下错误：
 
-An example is shown below:
+```bash
+fatal: pathspec '__pycache__' did not match any files
+```
 
-To specify the target state, modify the default value in the following sentence:
+说明当前目录下没有对应的 `__pycache__` 文件夹或暂存区中已无该路径。这种情况下，若 `__pycache__` 目录存在于项目的其它路径（如子目录下），可以使用如下命令递归查找并移除所有被暂存的 `__pycache__` 文件夹：
+
+```bash
+find . -type d -name '__pycache__' -exec git rm -r --cached {} +
+```
+
+如果依然提示没有匹配项，说明所有 `__pycache__` 文件夹都未加入暂存区，无需进一步操作，忽略该提示即可。
+
+
+
+如需指定目标状态，请修改如下代码中的默认值：
 
 ```python
 parser.add_argument("--target-state", type=Union[list, tuple, np.ndarray], default=(4,4))
 ```
 
-Please note that the coordinate system used for all states within the environment—such as the start state, target state, and forbidden states—adheres to the conventional Python setup. In this system, the point `(0, 0)` is commonly designated as the origin of coordinates.
+请注意，环境内各状态（如起点、终点、障碍点）采用常规 Python 坐标体系，(0, 0) 作为原点。
 
-
-
-If you want to save figures in each step, please modify the "debug" argument to  "True":
+若想在每一步保存图像，请修改 "debug" 参数为 "True"：
 
 ```bash
 parser.add_argument("--debug", type=bool, default=True)
 ```
 
+### 创建环境实例
 
-
-### Create an Instance
-
-If you would like to use the grid world environment to test your own RL algorithms, it is necessary to create an instance. The procedure for creating an instance and interacting with it can be found in `examples/example_grid_world.py`:
+如需在格子世界环境下测试自己的强化学习算法需先创建实例，创建和交互的流程见 `examples/example_grid_world.py`：
 
 ```python
 from src.grid_world import GridWorld
@@ -103,28 +116,23 @@ from src.grid_world import GridWorld
 
 ![](python_version/plots/sample1.png)
 
-- The policy is constructed as a matrix form shown below, which can be designed to be deterministic or stochastic. The example is a stochastic version:
-
+- 策略以矩阵形式存储，可设计为确定性或随机性。下例为随机策略：
 
  ```python
-     # Add policy
+     # 添加策略
      policy_matrix=np.random.rand(env.num_states,len(env.action_space))                                       
      policy_matrix /= policy_matrix.sum(axis=1)[:, np.newaxis] 
  ```
 
-- Moreover, to change the shape of the arrows, you can open `src/grid_world.py`:
-
+- 若要修改箭头形状，可在 `src/grid_world.py` 文件中更改如下代码：
 
  ```python
 self.ax.add_patch(patches.FancyArrow(x, y, dx=(0.1+action_probability/2)*dx, dy=(0.1+action_probability/2)*dy, color=self.color_policy, width=0.001, head_width=0.05))   
  ```
 
-
-
 ![](python_version/plots/sample2.png)
 
--  To add state value to each grid:
-
+-  为每个格子添加状态价值：
 
 ```python
 values = np.random.uniform(0,10,(env.num_states,))
@@ -133,118 +141,8 @@ env.add_state_values(values)
 
 ![](python_version/plots/sample3.png)
 
-- To render the environment:
-
+- 渲染环境：
 
 ```python
-env.render(animation_interval=3)    # the figure will stop for 3 seconds
-```
-
-------
-
-## MATLAB Version
-
-### Requirements
-
-- MATLAB >= R2020a, in order to implement the function *exportgraphics()*.
-
-### How to Run the Default Example
-
-Please start the m-file `main.m`. 
-
-Four figures will be generated: 
-
-The first figure is to show the policy: The length of an arrow is proportional to the probability of choosing this action, and the circle represents the agent would stay still. The meanings of other graphics and colors in this visualization are consistent with those used in Python.
-
-<img src="matlab_version/policy_offline_Q_learning.jpg" alt="policy_offline_Q_learning" style="zoom:67%;" />
-
-The shape of the arrow can be customized in `figure_plot_1.m`
-
-```matlab
-function drawPolicyArrow(kk, ind, i_bias, j_bias, kk_new, ratio, greenColor, action)
-    % Obtain the action vector
-    action = action{kk};
-
-    % For the non-moving action, draw a circle
-    if action(1) == 0 && action(2) == 0  % Assuming the fifth action is to stay
-        plot(i_bias(ind), j_bias(ind), 'o', 'MarkerSize', 8, 'linewidth', 2, 'color', greenColor);
-        return;
-    else
-        arrow = annotation('arrow', 'Position', [i_bias(ind), j_bias(ind), ratio * kk_new * action(1), - ratio * kk_new * action(2)], 'LineStyle', '-', 'Color', greenColor, 'LineWidth', 2);
-        arrow.Parent = gca;
-    end
-end
-```
-
-The second and the third figures are used to draw the trajectory in two different manners: The former is for the trajectory generated by a stochastic policy. The latter is provided to show the deterministic trajectory. 
-
-<img src="matlab_version/trajectory_Q_learning.jpg" alt="trajectory_Q_learning" style="zoom:67%;" />
-
-<img src="matlab_version/trajectory_Bellman_Equation_dotted.jpg" alt="trajectory_Bellman_Equation_dotted" style="zoom:67%;" />
-
-The fourth figure is used to show the state value for each state. 
-
-<img src="matlab_version/trajectory_Bellman_Equation.jpg" alt="trajectory_Bellman_Equation" style="zoom:67%;" />
-
-### Code Description
-
-- The main reinforcement learning algorithm is shown below:
-
-
-```matlab
-for step = 1:episode_length
-    action = stochastic_policy(state_history(step, :), action_space, policy, x_length, y_length);   
-    % Calculate the new state and reward
-    [new_state, reward] = next_state_and_reward(state_history(step, :), action, x_length, y_length, final_state, obstacle_state, reward_forbidden, reward_target, reward_step);
-    % Update state and reward history
-    state_history(step+1, :) = new_state;
-    reward_history(step) = reward;
-end
-```
-
-- The policy is shown as:
-
-
-```matlab
-function action = stochastic_policy(state, action_space, policy, x_length, y_length)
-    % Extract the action space and policy for a specific state
-    state_1d = x_length * (state(2)-1) + state(1); 
-    actions = action_space{state_1d};
-    policy_i = policy(state_1d, :);
-
-    % Ensure the sum of policy probabilities is 1
-    assert(sum(policy_i) == 1, 'The sum of policy probabilities must be 1.');
-    
-    % Generate a random index based on policy probabilities
-    action_index = randsrc(1, 1, [1:length(actions); policy_i]);
-    
-    % Select an action
-    action = actions{action_index};
-end
-```
-
-- The state transition function is shown below:
-
-
-```matlab
-function [new_state, reward] = next_state_and_reward(state, action, x_length, y_length, target_state, obstacle_state, reward_forbidden, reward_target, reward_step)
-    new_x = state(1) + action(1);
-    new_y = state(2) + action(2);
-    new_state = [new_x, new_y];
-
-    % Check if the new state is out of bounds
-    if new_x < 1 || new_x > x_length || new_y < 1 || new_y > y_length
-        new_state = state;
-        reward = reward_forbidden;
-    elseif ismember(new_state, obstacle_state, 'rows')
-        % If the new state is an obstacle
-        reward = reward_forbidden;
-    elseif isequal(new_state, target_state)
-        % If the new state is the target state
-        reward = reward_target;
-    else
-         % If the new state is a normal cell
-        reward = reward_step;
-    end
-end
+env.render(animation_interval=3)    # 图片暂停3秒
 ```
