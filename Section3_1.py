@@ -45,15 +45,20 @@ policy = np.zeros(3)
 
 for iteration in range(10):
     # 策略评估步骤：多次迭代以收敛于当前策略下的状态值
+    # 这段代码是在做“策略评估（policy evaluation）”步骤，用固定策略下估算每个状态的价值v
+    # 但这里写的是：np.sum(R, axis=1) + gamma * P[0].dot(v)
+    # 实际上 np.sum(R, axis=1) 是对每个状态的所有动作奖励求和，
+    # P[0].dot(v) 是只取了状态A（即第一个状态）的转移概率，这不是通用的策略评估算法！
+    # 一般的策略评估应该是：对每个状态s，v[s] = R[s, policy[s]] + gamma * np.dot(P[s, policy[s]], v)
+    # policy[s] 表示当前策略在s状态选的动作（a），P[s, a, :] 是动作a下转移到各 s' 的概率
     for _ in range(5):
         v = np.sum(R, axis=1) + gamma * P[0].dot(v)
     
     # 策略改进步骤：通过贪心方式提升当前策略
     q = np.zeros((3, 3))  # 每个状态-动作对的价值
     for s in range(3):    # 遍历所有状态
-        for a in range(3):    # 遍历所有动作
-            # 计算采取动作a的预期回报
-            q[s, a] = R[s, a] + gamma * P[s, a].dot(v)
+        # 向量化实现：直接一次性计算所有动作的q值
+        q[s] = R[s] + gamma * P[s].dot(v)
         # 选取具有最大q值的动作更新策略
         policy[s] = np.argmax(q[s])
 

@@ -136,25 +136,75 @@ class GridWorld():
             input('press Enter to continue...')     
 
 
- 
-    def add_policy(self, policy_matrix):                  
-        for state, state_action_group in enumerate(policy_matrix):    
+
+    def add_policy(self, policy_matrix):
+        """
+        在格子世界可视化环境中添加策略箭头。
+
+        参数:
+            policy_matrix: 一个形状为 (状态数, 动作数) 的二维array，policy_matrix[s, a] 代表在状态s采取动作a的概率。
+
+        功能说明:
+            - 对于每一个状态(state)，都会在对应坐标(x, y)上检查其所有动作的概率。
+            - 如果某个动作概率不为0，则：
+                - 取该动作的方向(dx, dy)。
+                - 如果动作不是原地运动((0,0))，则在状态对应格子处画一根箭头，长度/粗细反映策略概率。
+                - 如果动作是原地运动，则在格子中画一个圈，表示驻留动作。
+            - 箭头(或圈)的颜色统一用 self.color_policy。
+
+        """
+        for state, state_action_group in enumerate(policy_matrix):
+            # 计算格子坐标 (x, y)，x为列号，y为行号
             x = state % self.env_size[0]
             y = state // self.env_size[0]
+            # 枚举该状态下每个动作的概率
             for i, action_probability in enumerate(state_action_group):
-                if action_probability !=0:
+                if action_probability != 0:
                     dx, dy = self.action_space[i]
-                    if (dx, dy) != (0,0):
-                        self.ax.add_patch(patches.FancyArrow(x, y, dx=(0.1+action_probability/2)*dx, dy=(0.1+action_probability/2)*dy, color=self.color_policy, width=0.001, head_width=0.05))
+                    if (dx, dy) != (0, 0):
+                        # 在(x, y)为起点，按照(action_probability)比例绘制箭头，箭头方向为(dx, dy)
+                        self.ax.add_patch(
+                            patches.FancyArrow(
+                                x, y,
+                                dx=(0.1 + action_probability / 2) * dx,
+                                dy=(0.1 + action_probability / 2) * dy,
+                                color=self.color_policy,
+                                width=0.001,
+                                head_width=0.05
+                            )
+                        )
                     else:
-                        self.ax.add_patch(patches.Circle((x, y), radius=0.07, facecolor=self.color_policy, edgecolor=self.color_policy, linewidth=1, fill=False))
-    
+                        # 动作为原地不动，则画一个圈
+                        self.ax.add_patch(
+                            patches.Circle(
+                                (x, y),
+                                radius=0.07,
+                                facecolor=self.color_policy,
+                                edgecolor=self.color_policy,
+                                linewidth=1,
+                                fill=False
+                            )
+                        )
+
     def add_state_values(self, values, precision=1):
-        '''
-            values: iterable
-        '''
+        """
+        在格子世界可视化环境中显示状态值。
+
+        参数:
+            values: 可迭代对象，包含每个状态的值。
+            precision: 显示值的小数点精度，默认为1。
+
+        功能说明:
+            - 先将所有的状态值四舍五入到指定的精度。
+            - 遍历每个状态，根据状态索引 i 计算该状态的格子(x, y)坐标，x为列，y为行。
+            - 在每个格子的中心位置(x, y)处，使用 matplotlib 的 text 方法显示对应的数值，黑色字体，居中对齐。
+        """
         values = np.round(values, precision)
         for i, value in enumerate(values):
-            x = i % self.env_size[0]
-            y = i // self.env_size[0]
-            self.ax.text(x, y, str(value), ha='center', va='center', fontsize=10, color='black')
+            x = i % self.env_size[0]    # 列坐标
+            y = i // self.env_size[0]   # 行坐标
+            self.ax.text(
+                x, y, str(value), 
+                ha='center', va='center', 
+                fontsize=10, color='black'
+            )
